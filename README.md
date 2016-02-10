@@ -1,4 +1,4 @@
-![logo](http://www.abilio.dk/wp-content/uploads/2016/02/smallcloud-logo.png "SmallCloud")
+![logo](http://www.abilio.dk/wp-content/uploads/2016/02/smallcloud-logo.png)
 SmallCloud backend platform
 
 ## Warning
