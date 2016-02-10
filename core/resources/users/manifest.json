@@ -1,0 +1,17 @@
+{
+  "name": "Users",
+  "description": "SmallCloud system users",
+  "version": "0.1.0",
+  "dependencies": {
+    "groups": "0.1.0"
+  },
+  "schema": {
+    "@vocab":     "http://schema.org",
+    "@type":      "Person",
+    "id":         "@additionalName",
+    "firstname":  "@givenName",
+    "lastName":   "@familyName",
+    "email":      "@email",
+    "avatar":     "@image"
+  }
+}

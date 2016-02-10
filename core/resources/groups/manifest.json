@@ -1,0 +1,15 @@
+{
+  "name": "Groups",
+  "description": "SmallCloud user groups",
+  "version": "0.1.0",
+  "policies": {
+    "fetch": "member",
+    "create": "admin",
+    "update": "admin",
+    "remove": "admin"
+  },
+  "schema": {
+    "@vocab":     "http://schema.org",
+    "avatar":     "@image"
+  }
+}
