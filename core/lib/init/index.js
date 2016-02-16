@@ -26,7 +26,7 @@ module.exports = function(S){
   services = services.map(_services.process.bind(services));
 
   // Activate services
-  _services.depGraph.OverallOrder().map(_services.setup.bind(S, services));
+  _services.depGraph.overallOrder().map(_services.setup.bind(S, services));
 
   // XXX
   console.log('>>> SERVICES:', services);
