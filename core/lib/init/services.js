@@ -37,7 +37,11 @@ module.exports = {
     return services;
   },
 
-  process: function processServices(service){
+  process: function processServices(service, index, services){
+
+    // XXX
+    //console.log('aaa', arguments);
+    //console.log('>>>>>>', services);
 
     // Default status
     var status = {
@@ -53,7 +57,7 @@ module.exports = {
     status.activable = _.every(service.manifest.dependencies, function(version, depId){
 
       // Get required service
-      var dependency = _.find(this, {id: depId});
+      var dependency = _.find(services, {id: depId});
 
       // Is dep installed?
       if( !dependency ) return false;

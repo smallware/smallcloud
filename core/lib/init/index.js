@@ -19,17 +19,18 @@ module.exports = function(S){
   // Services collection
   var services = [];
 
-  // Load service candidates
-  _.reduce(requireAll(coreSrvPath), _services.load, services);
+  // Load and validate service candidates
+  var servs = _.reduce(requireAll(coreSrvPath), _services.load, [])
+              .map(_services.process);
 
   // Process services
-  services = services.map(_services.process.bind(services));
+  //services = services.map(_services.process.bind(services));
 
   // Activate services
-  _services.depGraph.overallOrder().map(_services.setup.bind(S, services));
+  _services.depGraph.overallOrder().map(_services.setup.bind(S, servs));
 
   // XXX
-  console.log('>>> SERVICES:', services);
+  console.log('>>> SERVICES:', servs);
 
 
 
