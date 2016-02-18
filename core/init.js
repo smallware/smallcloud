@@ -1,58 +1,39 @@
 
 var _          = require('lodash');
-var co         = require('co');
-var fs         = require('fs');
-var path       = require('path');
-var semver     = require('semver');
-var Promise    = require('bluebird');
 var DepGraph   = require('dependency-graph').DepGraph;
-var requireAll = require('require-all');
 
 
-// Initialize dep graphs
+// Instantiate dependency graph
 var depGraph = new DepGraph();
 
-
 module.exports = {
-
-  depGraph: depGraph,
-
-  load: function loadServices(services, candidate, name){
+  validate: function(services, candidate, srvId){
 
     // Service must have a manifest file
     if( !('manifest' in candidate) )
       return services;
 
+    // TODO
     // Service must have a setup function
-    if( !('setup' in candidate) || !_.isFunction(candidate.setup) )
-      return services;
-
-    // NEW
-    services.add(_.assign(candidate, {id: name}));
-
-    // XXX
-    console.log('###', services);
+    //if( !('setup' in candidate) || !_.isFunction(candidate.setup) )
+    //  return services;
 
     // Add to services collection
-    services.push(_.assign(candidate, {id: name}));
+    services.push(_.assign(candidate, {id: srvId}));
 
     // Add to dep graph
-    depGraph.addNode(name);
+    depGraph.addNode(srvId);
 
     // Return collection
     return services;
   },
 
-  process: function processServices(service, index, services){
-
-    // XXX
-    //console.log('aaa', arguments);
-    //console.log('>>>>>>', services);
+  process: function(service, index, services){
 
     // Default status
     var status = {
-      activable: true,
-      active: true
+      activable: true,  // All services are assumed activable
+      active: false     // All services are initially inactive
     };
 
     // Does service have any dependencies?
@@ -82,30 +63,28 @@ module.exports = {
       depGraph.addDependency(service.id, depId);
     }else{
       // Remove node and dependants
-      depGraph.dependantsOf(service.id).forEach(function(srvId){
-        depGraph.removeNode(srvId);
-      });
+      depGraph.dependantsOf(service.id).forEach(depGraph.removeNode);
       depGraph.removeNode(service.id);
     }
-
-    // XXX
-    console.log('DING');
 
     // Done
     return _.assign(service, status);
   },
 
-  setup: function setupServices(services, srvId){
+  startup: function(services){
 
-    var service = _.find(services, {id: srvId});
+    return depGraph.overallOrder().map(function(srvId){
 
-    service.setup.call(this);
+      // Get the service from ID
+      var service = _.find(services, {id: srvId});
 
-    return service;
+      // TODO
+      // Start up the services
+      // service.startup();
 
-  },
-
-  persist: function(service){
+      // Return activated service
+      return service;
+    });
 
   }
 };
