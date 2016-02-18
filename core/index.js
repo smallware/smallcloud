@@ -1,6 +1,6 @@
 
 var _          = require('lodash');
-var init       = require('./init');
+var init       = require('./lib/init');
 var path       = require('path');
 var requireAll = require('require-all');
 
