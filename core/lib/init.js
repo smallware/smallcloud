@@ -57,9 +57,6 @@ module.exports = {
 
     }, this);
 
-    // XXX
-    console.log('XXX', service.id);
-
 
     if( status.activable ){
       // Register dep graph nodes

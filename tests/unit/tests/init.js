@@ -2,7 +2,7 @@
 var _        = require('lodash');
 var chai     = require('chai');
 var init     = require('../../../core/lib/init');
-var mockSrvs = require('../mocks/services');
+var mockSrvs = require('../mocks/candidates');
 
 // Setup
 chai.should();
@@ -12,7 +12,7 @@ module.exports = function(){
 
   describe('SmallCloud Init', function(){
 
-    describe('Init service validation', function(){
+    describe('Init candidate validation', function(){
 
       it('Should not validate service candidates without a manifest file', function(){
 
