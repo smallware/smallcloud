@@ -13,10 +13,9 @@ module.exports = {
     if( !('manifest' in candidate) )
       return services;
 
-    // TODO
     // Service must have a setup function
-    //if( !('setup' in candidate) || !_.isFunction(candidate.setup) )
-    //  return services;
+    if( !('startup' in candidate) || !_.isFunction(candidate.startup) )
+      return services;
 
     // Add to services collection
     services.push(_.assign(candidate, {id: srvId}));
