@@ -17,6 +17,10 @@ module.exports = {
     if( !('startup' in candidate) || !_.isFunction(candidate.startup) )
       return services;
 
+    // Service must declare a version in manifest
+    if( !('version' in candidate.manifest) )
+      return services;
+
     // Add to services collection
     services.push(_.assign(candidate, {id: srvId}));
 

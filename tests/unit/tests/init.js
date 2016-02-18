@@ -12,22 +12,36 @@ module.exports = function(){
 
   describe('SmallCloud Init', function(){
 
-    it('Should not validate service candidates without a manifest file', function(){
+    describe('Init service validation', function(){
 
-      // Run init validation
-      var valids = _.reduce(mockSrvs, init.validate, []);
+      it('Should not validate service candidates without a manifest file', function(){
 
-      // Assert
-      valids.should.not.include(mockSrvs.service03);
-    });
+        // Run init validation
+        var valids = _.reduce(mockSrvs, init.validate, []);
 
-    it('Should not validate service candidates without a startup function', function(){
+        // Assert
+        valids.should.not.include(mockSrvs.service03);
+      });
 
-      // Run init validation
-      var valids = _.reduce(mockSrvs, init.validate, []);
+      it('Should not validate service candidates without a startup function', function(){
 
-      // Assert
-      valids.should.not.include(mockSrvs.service04);
+        // Run init validation
+        var valids = _.reduce(mockSrvs, init.validate, []);
+
+        // Assert
+        valids.should.not.include(mockSrvs.service04);
+
+      });
+
+      it('Should not validate service candidates without a version in manifest', function(){
+
+        // Run init validation
+        var valids = _.reduce(mockSrvs, init.validate, []);
+
+        // Assert
+        valids.should.not.include(mockSrvs.service05);
+
+      });
 
     });
 

@@ -26,6 +26,11 @@ module.exports = {
     manifest: {
       version: '0.1.0'
     }
+  },
+
+  service05: {
+    manifest: {},
+    startup: function(){}
   }
 
 };
