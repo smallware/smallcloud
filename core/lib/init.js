@@ -1,6 +1,8 @@
+'use strict';
 
-var _          = require('lodash');
-var DepGraph   = require('dependency-graph').DepGraph;
+var _        = require('lodash');
+var semver   = require('semver');
+var DepGraph = require('dependency-graph').DepGraph;
 
 
 // Instantiate dependency graph
@@ -57,10 +59,17 @@ module.exports = {
 
     }, this);
 
+    // XXX
+    console.log('>>>', service.id, service.manifest.dependencies);
+    console.log('>>>', depGraph.nodes);
 
-    if( status.activable ){
+    // Is service activable?
+    if( status.activable && !_.isEmpty(service.manifest.dependencies) ){
       // Register dep graph nodes
-      depGraph.addDependency(service.id, depId);
+      Object.keys(service.manifest.dependencies)
+        .forEach(depGraph.addDependency.bind(depGraph, service.id));
+
+      //depGraph.addDependency(service.id, depId);
     }else{
       // Remove node and dependants
       depGraph.dependantsOf(service.id).forEach(depGraph.removeNode);
