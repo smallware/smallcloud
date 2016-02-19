@@ -1,6 +1,7 @@
 'use strict';
 
 var _        = require('lodash');
+var co       = require('co');
 var semver   = require('semver');
 var DepGraph = require('dependency-graph').DepGraph;
 
@@ -19,9 +20,14 @@ module.exports = {
     if( !('startup' in candidate) || !_.isFunction(candidate.startup) )
       return services;
 
-    // Service must declare a version in manifest
+    // Service must declare a valid version in manifest
     if( !('version' in candidate.manifest) )
       return services;
+
+    // Declared version must be valid
+    if( _.isNull(semver.valid(candidate.manifest.version)) )
+      return services;
+
 
     // Add to services collection
     services.push(_.assign(candidate, {id: srvId}));
@@ -58,10 +64,6 @@ module.exports = {
       return semver.satisfies(dependency.manifest.version, version);
 
     }, this);
-
-    // XXX
-    console.log('>>>', service.id, service.manifest.dependencies);
-    console.log('>>>', depGraph.nodes);
 
     // Is service activable?
     if( status.activable && !_.isEmpty(service.manifest.dependencies) ){

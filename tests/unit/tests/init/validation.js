@@ -31,13 +31,14 @@ module.exports = function(){
         valids.should.not.include(mockSrvs.service04);
       });
 
-      it('Should not validate service candidates without a version in manifest', function(){
+      it('Should not validate service candidates without a valid version in manifest', function(){
 
         // Run init validation
         var valids = _.reduce(mockSrvs, init.validate, []);
 
         // Assert
         valids.should.not.include(mockSrvs.service05);
+        valids.should.not.include(mockSrvs.service06);
       });
 
 
