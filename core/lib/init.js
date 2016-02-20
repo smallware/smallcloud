@@ -107,9 +107,11 @@ module.exports = {
     // Return promise
     return new Promise(function(resolve, reject){
 
-      // Run!
+      // Say hello!
       console.log(' ');
       s.core.log('info', 'Starting SmallCloud services...');
+
+      // Run!
       s.runner.call({
         services: services,
         resolve: resolve,

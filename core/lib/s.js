@@ -58,10 +58,10 @@ var s = {
       try{ // Invoke init runner
         this.runner(i);
       }catch(e){
-        reject(e)
+        this.reject(e)
       }
     }else{
-      console.log('\n*** [DONE]');
+      this.core.log('info', 'SmallCloud is ready');
       this.resolve(s);
     }
   },
