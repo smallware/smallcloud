@@ -27,11 +27,3 @@ init.run(services).then(function(_services){
 }).catch(function(e){
   console.log(e.stack);
 });
-
-
-
-
-// XXX
-module.exports = {
-  services: services
-};
