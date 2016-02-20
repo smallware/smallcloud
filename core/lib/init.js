@@ -107,40 +107,6 @@ module.exports = {
     // Return promise
     return new Promise(function(resolve, reject){
 
-      // Define runner function
-      //function thener(i, api){
-      //
-      //  // Register defined api
-      //  if( api ) s.reg('api', services[i - 1], api);
-      //
-      //  // More services to initialize?
-      //  if( i < services.length ){
-      //
-      //    try{ // Invoke init runner
-      //      runner(i);
-      //    }catch(e){
-      //      reject(e)
-      //    }
-      //  }else{
-      //    console.log('\n*** [DONE]');
-      //    resolve(s);
-      //  }
-      //}
-
-      // Define runner function
-      //var runner = function(i){
-      //
-      //  // Defaults
-      //  i = i || 0;
-      //
-      //  // Run generator
-      //  co(services[i].init.bind(
-      //    _.omit(services[i], ['init', 'manifest', 'active', 'activable']),
-      //    s.ctx(services[i])
-      //  )).then(thener.bind(null, i + 1))
-      //    .catch(reject);
-      //};
-
       // Run!
       console.log(' ');
       s.core.log('info', 'Starting SmallCloud services...');

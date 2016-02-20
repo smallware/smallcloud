@@ -50,8 +50,6 @@ var s = {
   thener: function(i, api){
 
     // Register defined api
-    //console.log('>>> API', api);
-    //console.log('>>> this', this );
     if( api ) this.reg('api', this.services[i - 1], api);
 
     // More services to initialize?
@@ -64,7 +62,7 @@ var s = {
       }
     }else{
       console.log('\n*** [DONE]');
-      resolve(s);
+      this.resolve(s);
     }
   },
 
