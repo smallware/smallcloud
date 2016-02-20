@@ -11,36 +11,22 @@ var srvPaths = {
   custom: path.resolve(__dirname, '../services')
 };
 
-// Service init queue and runner
-var runner = [];
-runner.run = function(service){
-
-};
 
 // Get service candidates
 var srvCandidates = _.assign({}, requireAll(srvPaths.core, srvPaths.custom));
 
-// XXX
-//console.log('ccc', srvCandidates);
 
 // Load services
 var services = _.reduce(srvCandidates, init.validate, [])
                .map(init.process).reduce(init.queue, []);
 
-// XXX
-//console.log('sss', services);
 
 // Run init scripts
 init.run(services).then(function(_services){
   console.log('\n[DUMP]', _services);
 }).catch(function(e){
-  //console.log(e);
   console.log(e.stack);
 });
-
-
-// Start services up
-//var activeSrvs = init.startup(services);
 
 
 
