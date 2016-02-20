@@ -1,22 +1,34 @@
+'use strict';
 
-var _          = require('lodash');
-var DepGraph   = require('dependency-graph').DepGraph;
-
-
-// Instantiate dependency graph
+var _        = require('lodash');
+var s        = require('./s');
+var co       = require('co');
+var semver   = require('semver');
+var Promise  = require('bluebird');
+var DepGraph = require('dependency-graph').DepGraph;
 var depGraph = new DepGraph();
 
+
 module.exports = {
+
   validate: function(services, candidate, srvId){
 
     // Service must have a manifest file
     if( !('manifest' in candidate) )
       return services;
 
-    // TODO
-    // Service must have a setup function
-    //if( !('setup' in candidate) || !_.isFunction(candidate.setup) )
-    //  return services;
+    // Service must have a init function
+    if( !('init' in candidate) || !_.isFunction(candidate.init) )
+      return services;
+
+    // Service must declare a valid version in manifest
+    if( !('version' in candidate.manifest) )
+      return services;
+
+    // Declared version must be valid
+    if( _.isNull(semver.valid(candidate.manifest.version)) )
+      return services;
+
 
     // Add to services collection
     services.push(_.assign(candidate, {id: srvId}));
@@ -54,14 +66,19 @@ module.exports = {
 
     }, this);
 
-    // XXX
-    console.log('XXX', service.id);
-
-
+    // Is service activable?
     if( status.activable ){
+
+      // Have dependencies?
+      if(!_.isEmpty(service.manifest.dependencies))
+        return _.assign(service, status);
+
       // Register dep graph nodes
-      depGraph.addDependency(service.id, depId);
-    }else{
+      Object.keys(service.manifest.dependencies)
+        .forEach(depGraph.addDependency.bind(depGraph, service.id));
+
+      //depGraph.addDependency(service.id, depId);
+    }else if(depGraph.hasNode(service.id)){
       // Remove node and dependants
       depGraph.dependantsOf(service.id).forEach(depGraph.removeNode);
       depGraph.removeNode(service.id);
@@ -71,19 +88,36 @@ module.exports = {
     return _.assign(service, status);
   },
 
-  startup: function(services){
+  queue: function(queue, service){
 
-    return depGraph.overallOrder().map(function(srvId){
+    // Get init index of service init
+    var _index = depGraph.overallOrder().indexOf(service.id);
 
-      // Get the service from ID
-      var service = _.find(services, {id: srvId});
+    // Insert in queue
+    queue[_index] = service;
 
-      // TODO
-      // Start up the services
-      // service.startup();
+    return queue;
+  },
 
-      // Return activated service
-      return service;
+  run: function(services){
+
+    // Register all services in core registry
+    s.reg('srv', services);
+
+    // Return promise
+    return new Promise(function(resolve, reject){
+
+      // Say hello!
+      console.log(' ');
+      s.core.log('info', 'Starting SmallCloud services...');
+
+      // Run!
+      s.runner.call({
+        services: services,
+        resolve: resolve,
+        reject: reject
+      });
+
     });
 
   }

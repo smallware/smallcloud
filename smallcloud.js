@@ -1,8 +1,8 @@
 
-var init = require('./core');
+var core = require('./core');
 
 // XXX
-console.log('>>>', init);
+//console.log('[FINAL]', core);
 
 
 
