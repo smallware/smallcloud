@@ -2,9 +2,13 @@
 
 module.exports = function*(S){
 
-  console.log('>>>', 'Running Resources init...');
-  console.log('>>> api', S);
-  console.log('>>> this', this);
+  S.log('info', 'Running resources service init...');
+  S.log('debug', S);
+  S.log('debug', this);
+
+  //console.log('>>>', 'Running Resources init...');
+  //console.log('>>> api', S);
+  //console.log('>>> this', this);
 
   return '[Resources API]';
 };

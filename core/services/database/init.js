@@ -1,9 +1,13 @@
 
 module.exports = function*(S){
 
-  console.log('\n>>>', 'Running Database init...');
-  console.log('>>> api', S);
-  console.log('>>> this', this);
+  //console.log('\n>>>', 'Running Database init...');
+  //console.log('>>> api', S);
+  //console.log('>>> this', this);
 
-  return '[Database API]';
+  S.log('info', 'Running database service init...');
+  S.log('debug', S);
+  S.log('debug', this);
+
+  return '[[Database API]]';
 };

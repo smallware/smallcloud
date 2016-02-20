@@ -1,5 +1,8 @@
 
+'use strict';
+
 var _        = require('lodash');
+var co       = require('co');
 var logger   = require('./util/logger.js');
 
 
@@ -7,13 +10,14 @@ var store = {
   api: {},
   srv: {},
   reg: {},
-  all: {
-    log: logger
+  core: {
+    log: logger,
+    ses: {}
   }
 };
 
 var register = {
-  services: function(srv){
+  srv: function(srv){
     srv.forEach(function(_srv){
       store.srv[_srv.id] = _srv;
       store.reg[_srv.id] = Object.keys(_srv.manifest.dependencies);
@@ -25,64 +29,60 @@ var register = {
 };
 
 
-module.exports = {
+var s = {
 
-  register: function(srv, api){
-
-    // XXX
-    //console.log('\n>>>', arguments);
-    console.log('\n[REGISTER] SRV', srv.id);
-    //console.log('API', api);
-    //console.log('[R] DEP', srv.manifest.dependencies);
-
-
-    store.srv[srv.id] = srv;
-    store.api[srv.id] = api;
-    store.reg[srv.id] = Object.keys(srv.manifest.dependencies);
-
-    // XXX
-    //console.log('[R] S REG', store.registry);
-    //console.log('[R] S API', store.api);
-  },
+  core: store.core,
 
   reg: function(type, srv, api){
-    console.log('S.reg', type, srv.id);
     register[type](srv, api);
   },
 
-  //regSrv: function(srv){
-  //
-  //  if( _.isArray(srv) ){
-  //    srv.forEach(function(_srv){
-  //      store.srv[_srv.id] = _srv;
-  //      store.reg[_srv.id] = Object.keys(_srv.manifest.dependencies);
-  //    });
-  //  }else{
-  //    store.srv[srv.id] = srv;
-  //    store.reg[srv.id] = Object.keys(srv.manifest.dependencies);
-  //  }
-  //},
-  //
-  //regApi: function(srv, api){
-  //  store.api[srv.id] = api;
-  //},
-
   ctx: function(srv){
 
-    // XXX
-    console.log('--- [CONTEXT]', srv.id, 'registry:', store.reg[srv.id]);
-
     var apis = _.reduce(store.reg[srv.id], function(out, srvId){
-      console.log('--- [C] Store', store.api);
       out[srvId] = store.api[srvId];
       return out;
     }, {});
 
-    // XXX
-    console.log('--- [C] APIS', apis);
-
-    return _.assign({}, store.all, apis);
+    return _.assign({}, store.core, apis);
   },
 
-  common: store.common
+  thener: function(i, api){
+
+    // Register defined api
+    //console.log('>>> API', api);
+    //console.log('>>> this', this );
+    if( api ) this.reg('api', this.services[i - 1], api);
+
+    // More services to initialize?
+    if( i < this.services.length ){
+
+      try{ // Invoke init runner
+        this.runner(i);
+      }catch(e){
+        reject(e)
+      }
+    }else{
+      console.log('\n*** [DONE]');
+      resolve(s);
+    }
+  },
+
+  runner: function(i){
+
+    // Defaults
+    i = i || 0;
+
+    // Grow context
+    _.assign(this, s);
+
+    // Run generator
+    co(this.services[i].init.bind(
+      _.omit(this.services[i], ['init', 'manifest', 'active', 'activable']),
+      this.ctx(this.services[i])
+    )).then(this.thener.bind(this, i + 1))
+      .catch(this.reject);
+  }
 };
+
+module.exports = s;
