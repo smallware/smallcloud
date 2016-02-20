@@ -66,16 +66,16 @@ module.exports = function(){
         haveIds.should.be.true;
       });
 
-      it('Should return items with a startup method', function(){
+      it('Should return items with a init method', function(){
 
         // Run init validation
         var valids = _.reduce(mockSrvs, init.validate, []);
 
         // Verify all items have a startup method
         var haveIds = valids.every(function(item){
-          return 'startup' in item
+          return 'init' in item
             && !_.isEmpty(item.id)
-            && _.isFunction(item.startup);
+            && _.isFunction(item.init);
         });
 
         // Assert

@@ -10,6 +10,7 @@ var mockSrvs = require('../../mocks/services');
 
 // Setup
 chai.should();
+var depGraph = new DepGraph();
 
 
 module.exports = function(){
@@ -17,7 +18,6 @@ module.exports = function(){
   describe('Init service processing', function(){
 
     before(function(){
-      var depGraph = new DepGraph();
 
       mockSrvs.map(function(item){
         return item.id;
@@ -32,6 +32,22 @@ module.exports = function(){
       mockSrvs.map(init.process).should.be.an('array');
     });
 
+    it('Should return items with active property set to false', function(){
+      var processed = mockSrvs.map(init.process)
+        .every(function(item){ return !item.active; })
+        .should.be.true;
+    });
+
+    it('Should set as inactivable services with unmet dependencies', function(){
+      var processed = mockSrvs.map(init.process);
+      processed[2].activable.should.be.false;
+      processed[1].activable.should.be.true;
+    });
+
+    it('Should remove inactivable services from de dependency graph', function(){
+      var processed = mockSrvs.map(init.process);
+      Object.keys(depGraph.nodes).should.not.include(mockSrvs[2].id);
+    });
 
   });
 };

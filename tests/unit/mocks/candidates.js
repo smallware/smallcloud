@@ -6,7 +6,7 @@ module.exports = {
     manifest: {
       version: '0.1.0'
     },
-    startup: function(){}
+    init: function(){}
   },
 
   service02: {
@@ -16,7 +16,7 @@ module.exports = {
         service01: '0.1.0'
       }
     },
-    startup: function(){}
+    init: function(){}
   },
 
   service03: {
@@ -29,12 +29,12 @@ module.exports = {
 
   service05: {
     manifest: {},
-    startup: function(){}
+    init: function(){}
   },
 
   service06: {
     manifest: { version: 'a.b.c' },
-    startup: function(){}
+    init: function(){}
   }
 
 };

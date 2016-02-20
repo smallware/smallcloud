@@ -2,7 +2,7 @@
 var core = require('./core');
 
 // XXX
-console.log('>>>', core);
+//console.log('[FINAL]', core);
 
 
 
