@@ -1,7 +1,9 @@
 
 module.exports = function*(S){
-  console.log('III running Small Database');
-  console.log('SSS', S);
 
-  return 'Database result!';
+  console.log('\n>>>', 'Running Database init...');
+  console.log('>>> api', S);
+  console.log('>>> this', this);
+
+  return '[Database API]';
 };

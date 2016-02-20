@@ -1,8 +1,10 @@
 'use strict';
 
 var _        = require('lodash');
+var S        = require('./s');
 var co       = require('co');
 var semver   = require('semver');
+//var logger   = require('./util/logger.js');
 var Promise  = require('bluebird');
 var DepGraph = require('dependency-graph').DepGraph;
 
@@ -11,7 +13,10 @@ var DepGraph = require('dependency-graph').DepGraph;
 var depGraph = new DepGraph();
 
 // XXX
-var S = {thisIs_S: true};
+//var S = {
+//  srv: {},
+//  log: logger
+//};
 
 module.exports = {
 
@@ -94,13 +99,6 @@ module.exports = {
 
   queue: function(queue, service){
 
-    // XXX
-    //console.log('\n===============================');
-    //console.log('aaa', arguments);
-    //console.log('qqq', queue);
-    //console.log('sss', service.id);
-    //console.log('ggg', depGraph.nodes);
-
     // Get init index of service init
     var _index = depGraph.overallOrder().indexOf(service.id);
 
@@ -112,47 +110,122 @@ module.exports = {
 
   run: function(services){
 
+    // Register all services in core registry
+    S.reg('services', services);
+
+    // Return promise
     return new Promise(function(resolve, reject){
 
-      (function runner(i, result){
+      // Define runner function
+      function thener(i, api){
+
+        // XXX
+        //console.log('\nRunner', i, services[i].id);
+        //console.log('--- args', arguments);
+
+        // Register defined api
+        //if(api) S.reg('api', services[i-1], api);
+
+        // XXX
+        console.log('--- length', i, services.length);
+
+        // More services to initialize?
+        if( i < services.length ){
+
+          // XXX
+          console.log('---', i, services[i].id);
+
+          try{
+            // Retrieve init context
+            //var ctx = S.ctx(services[i]);
+
+            // Run init script
+            //co(services[i].init(ctx))
+            //  .then(thener.bind(null, i+1))
+            //  .catch(reject);
+
+            // Invoke init runner
+            runner(i);
+
+          }catch(e){reject(e)}
+        }else{
+          console.log('\n*** [DONE]');
+          resolve(S);
+        }
+      }
+
+      // Define runner function
+      var runner = function(i){
+
         i = i || 0;
-        //console.log('\niii', i);
-        //console.log('ttt', this);
+
+        co(services[i].init.bind(
+          _.omit(services[i], ['init', 'manifest', 'active', 'activable']),
+          S.ctx(services[i])
+        )).then(thener.bind(null, i+1))
+          .catch(reject);
+      };
+
+      // Run!
+      runner();
+      //co(services[0].init.bind(
+      //  _.omit(services[0], ['init', 'manifest', 'active', 'activable']),
+      //  S.ctx(services[0])
+      //)).then(runner.bind(null, 1));
+
+    });
+
+  },
+
+  _run: function(services){
+
+    return new Promise(function(resolve, reject){
+
+      // Register first service
+      //S.register(services[0], _api);
+
+      // Run the runner!
+      (function runner(i, ctx){
+
+        // Setup
+        //i = i || 0;
+
+        //console.log('>>>', i, ctx);
+
+        // Register previous service api
+        //if(api) S.srv[services[i-1].id] = api;
+        //if(api) S.register(services[i-1], api);
 
         try{
+          // Activate service?
           if( i < services.length && services[i].activable){
-            console.log('\n>>> Running init for', i);
+
+            // Mark service as active
             services[i].active = true;
-            return co(services[i].init(S)).then(runner.bind(null, i+1));
+
+            // Get service init context
+            //var ctx = S.ctx(services[i].id);
+
+            // Run init scripts recursively
+            //co(services[i].init(ctx)).then(runner.bind(null, i+1));
+            co(services[i].init(ctx)).then(function(_api){
+
+              // Register api?
+              if(_api) S.register(services[i], _api);
+
+              // Get service init context
+              var _ctx = S.ctx(services[i].id);
+
+              runner.call(null, i+1, _ctx);
+            }).catch(reject);
           }else{
-            console.log('[EMIT ] Init done!');
-            resolve(services);
+            resolve(S);
           }
         }catch(e){
           reject(e);
         }
-      }).call(services);
+      }).call(services, 0, S.common);
 
     });
-  },
-
-
-
-
-  //startup: function(services){
-  //
-  //  return depGraph.overallOrder().map(function(srvId){
-  //
-  //    // Get the service from ID
-  //    var service = _.find(services, {id: srvId});
-  //
-  //    // TODO
-  //    // Start up the services
-  //    // service.startup();
-  //
-  //    // Return activated service
-  //    return service;
-  //  });
-  //
-  //}
+  }
 };

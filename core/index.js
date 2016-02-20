@@ -32,8 +32,10 @@ var services = _.reduce(srvCandidates, init.validate, [])
 
 // Run init scripts
 init.run(services).then(function(_services){
-  console.log('\n[INSTALLED SERVICES]');
-  console.log(_services);
+  console.log('\n[CORE]', _services);
+}).catch(function(e){
+  //console.log(e);
+  console.log(e.stack);
 });
 
 
