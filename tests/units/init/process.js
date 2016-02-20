@@ -4,7 +4,7 @@ var _        = require('lodash');
 var chai     = require('chai');
 var rewire   = require('rewire');
 var DepGraph = require('dependency-graph').DepGraph;
-var init     = rewire('../../../../core/lib/init');
+var init     = rewire('../../../core/lib/init');
 //var init     = require('../../../../core/lib/init');
 var mockSrvs = require('../../mocks/services');
 

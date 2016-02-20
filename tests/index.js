@@ -3,12 +3,12 @@
 var _          = require('lodash');
 var path       = require('path');
 var requireAll = require('require-all');
-var tests      = requireAll(path.resolve(__dirname, './tests'));
+var units      = requireAll(path.resolve(__dirname, './units'));
 
 
 // Runner
-function runner(tests){
-  _.forEach(tests, function(test){
+function runner(_units){
+  _.forEach(_units, function(test){
     if( _.isFunction(test) )
       test();
     else
@@ -20,6 +20,6 @@ function runner(tests){
 describe('SmallCloud unit tests', function(){
 
   // Run the tests!
-  runner(tests);
+  runner(units);
 
 });

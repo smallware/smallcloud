@@ -2,7 +2,7 @@
 
 var _        = require('lodash');
 var chai     = require('chai');
-var init     = require('../../../../core/lib/init');
+var init     = require('../../../core/lib/init');
 var mockSrvs = require('../../mocks/candidates');
 
 // Setup
