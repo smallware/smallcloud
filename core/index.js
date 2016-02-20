@@ -32,7 +32,7 @@ var services = _.reduce(srvCandidates, init.validate, [])
 
 // Run init scripts
 init.run(services).then(function(_services){
-  console.log('\n[CORE]', _services);
+  console.log('\n[DUMP]', _services);
 }).catch(function(e){
   //console.log(e);
   console.log(e.stack);
